@@ -2,19 +2,19 @@
 
 This repository is a home for example firmware projects targeting the Cytron Maker Pi Pico board. Right now it includes:
 
-- [projects/bringup-test](/home/thinh/workspace/cytron-maker-pico/projects/bringup-test/README.md:1): a board bring-up and hardware smoke test
-- [projects/freertos-blinking](/home/thinh/workspace/cytron-maker-pico/projects/freertos-blinking/README.md:1): a minimal FreeRTOS demo with two blink tasks
-- [projects/freertos-excersises](/home/thinh/workspace/cytron-maker-pico/projects/freertos-excersises/001/README.md:1): exercise-based FreeRTOS practice
+- [projects/bringup-test](projects/bringup-test/README.md): a board bring-up and hardware smoke test
+- [projects/freertos-blinking](projects/freertos-blinking/README.md): a minimal FreeRTOS demo with two blink tasks
+- [projects/freertos-excersises](projects/freertos-excersises/001/README.md): exercise-based FreeRTOS practice
 
 The layout is meant to grow over time, so future board-specific projects can be added under `projects/` without cluttering the repo root.
 
 Shared board support lives at:
 
-- [boards/cytron_maker_pi_pico.h](/home/thinh/workspace/cytron-maker-pico/boards/cytron_maker_pi_pico.h:1)
-- [bsp/board.h](/home/thinh/workspace/cytron-maker-pico/bsp/board.h:1)
-- [lib](/home/thinh/workspace/cytron-maker-pico/lib/README.md:1)
-- [third_party/FreeRTOS-Kernel](/home/thinh/workspace/cytron-maker-pico/third_party/FreeRTOS-Kernel:1)
-- [doc](/home/thinh/workspace/cytron-maker-pico/doc:1)
+- [boards/cytron_maker_pi_pico.h](boards/cytron_maker_pi_pico.h)
+- [bsp/board.h](bsp/board.h)
+- [lib](lib/README.md)
+- [third_party/FreeRTOS-Kernel](third_party/FreeRTOS-Kernel)
+- [doc](doc)
 
 Recommended top-level structure:
 
@@ -61,14 +61,3 @@ cmake --build build/freertos-blinking
 cmake -S projects/freertos-excersises/001 -B build/freertos-excersises-001-standalone -DPICO_SDK_PATH=$HOME/pico-sdk
 cmake --build build/freertos-excersises-001-standalone
 ```
-
-## Outputs
-
-Current UF2 outputs are:
-
-- [build/cytron_maker_pi_pico_hw_test.uf2](/home/thinh/workspace/cytron-maker-pico/build/cytron_maker_pi_pico_hw_test.uf2)
-- [build/freertos-blinking/cytron_maker_pi_pico_freertos_blink.uf2](/home/thinh/workspace/cytron-maker-pico/build/freertos-blinking/cytron_maker_pi_pico_freertos_blink.uf2)
-
-For project-specific details, expected behavior, and pin usage, use the README in each demo folder.
-
-Reusable shared code lives under [lib](/home/thinh/workspace/cytron-maker-pico/lib/README.md:1). The first shared module is `pico_cli`, which provides a tiny command-line interface for Pico stdio transports such as USB serial or UART. The library itself is generic Pico/RP2040 code and is not tied to this specific Cytron board.

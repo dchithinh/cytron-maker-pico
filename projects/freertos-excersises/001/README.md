@@ -2,11 +2,12 @@
 
 This folder contains the implementation for the exercise described in:
 
-- [rtos-exercises-tier1-answers.md](/home/thinh/workspace/cytron-maker-pico/projects/freertos-excersises/001/rtos-exercises-tier1-answers.md:1)
+- [rtos-exercises-tier1-answers.md](rtos-exercises-tier1-answers.md)
 
 Implemented design:
 
 - two independent FreeRTOS tasks
+- one CLI polling task over USB serial
 - no queues, semaphores, or shared application data
 - one LED toggles every `250 ms`
 - one LED toggles every `1000 ms`
@@ -14,14 +15,19 @@ Implemented design:
 
 Pin usage:
 
-- `LED1 task` uses `BOARD_LED_PIN` (`GP25`)
+- `LED1 task` uses `CYTRON_GROVE6_PIN2` (`GP27`)
 - `LED2 task` uses `BOARD_GROVE6_PIN1` (`GP26`)
+
+USB CLI:
+
+- Transport: Pico USB serial
+- Commands: `help`, `boot`
 
 ## Build This Exercise Directly
 
 ```bash
-cmake -S /home/thinh/workspace/cytron-maker-pico/projects/freertos-excersises/001 -B /home/thinh/workspace/cytron-maker-pico/build/freertos-excersises-001-standalone -DPICO_SDK_PATH=$HOME/pico-sdk
-cmake --build /home/thinh/workspace/cytron-maker-pico/build/freertos-excersises-001-standalone
+cmake -S projects/freertos-excersises/001 -B build/freertos-excersises-001-standalone -DPICO_SDK_PATH=$HOME/pico-sdk
+cmake --build build/freertos-excersises-001-standalone
 ```
 
 ## Output

@@ -20,6 +20,10 @@ if (CMAKE_SOURCE_DIR STREQUAL CMAKE_CURRENT_SOURCE_DIR)
     pico_sdk_init()
 endif()
 
+if (NOT TARGET pico_cli)
+    add_subdirectory(${CYTRON_REPO_ROOT}/lib ${CMAKE_CURRENT_BINARY_DIR}/lib)
+endif()
+
 set(FREERTOS_KERNEL_PATH ${CYTRON_REPO_ROOT}/third_party/FreeRTOS-Kernel)
 
 add_library(freertos_exercise_001_config INTERFACE)
@@ -44,6 +48,7 @@ target_include_directories(cytron_maker_pi_pico_freertos_exercise_001 PRIVATE
 )
 
 target_link_libraries(cytron_maker_pi_pico_freertos_exercise_001
+    pico_cli
     pico_stdlib
     hardware_gpio
     FreeRTOS-Kernel-Heap4

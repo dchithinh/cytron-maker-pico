@@ -6,6 +6,7 @@
 #include "bsp/board.h"
 #include "hardware/gpio.h"
 #include "pico/stdlib.h"
+#include "pico_cli/pico_cli.h"
 
 typedef struct blink_task_config {
     const char *name;
@@ -15,7 +16,7 @@ typedef struct blink_task_config {
 
 static const blink_task_config_t led1_task_config = {
     .name = "led1_task",
-    .pin = BOARD_LED_PIN,
+    .pin = BOARD_GROVE6_PIN2,
     .period_ticks = pdMS_TO_TICKS(250),
 };
 
@@ -23,6 +24,12 @@ static const blink_task_config_t led2_task_config = {
     .name = "led2_task",
     .pin = BOARD_GROVE6_PIN1,
     .period_ticks = pdMS_TO_TICKS(1000),
+};
+
+static char cli_buffer[64];
+static const pico_cli_command_t cli_commands[] = {
+    {.name = "help", .help = "List available commands", .handler = pico_cli_help_command},
+    {.name = "boot", .help = "Jump to UF2 bootloader mode", .handler = pico_cli_boot_command},
 };
 
 static void two_rate_blink_task(void *task_parameters) {
@@ -40,6 +47,15 @@ static void two_rate_blink_task(void *task_parameters) {
     }
 }
 
+static void cli_task(void *task_parameters) {
+    pico_cli_t *cli = (pico_cli_t *)task_parameters;
+
+    for (;;) {
+        pico_cli_poll(cli);
+        vTaskDelay(pdMS_TO_TICKS(20));
+    }
+}
+
 void vApplicationMallocFailedHook(void) {
     panic("FreeRTOS malloc failed");
 }
@@ -53,9 +69,22 @@ int main(void) {
     stdio_init_all();
     sleep_ms(1200);
 
-    printf("Exercise 001: Two-rate blinker on %s\r\n", BOARD_NAME);
-    printf("LED1 task: GP%u every 250 ms\r\n", BOARD_LED_PIN);
-    printf("LED2 task: GP%u every 1000 ms\r\n", BOARD_GROVE6_PIN1);
+    pico_cli_t cli = {
+        .prompt = "exercise-001> ",
+        .buffer = cli_buffer,
+        .buffer_size = sizeof(cli_buffer),
+        .commands = cli_commands,
+        .command_count = count_of(cli_commands),
+        .context = NULL,
+    };
+    pico_cli_init(&cli);
+
+    pico_cli_printf_color(PICO_CLI_ANSI_BOLD PICO_CLI_ANSI_GREEN, "Exercise 001: Two-rate blinker on %s\r\n", BOARD_NAME);
+    pico_cli_printf_color(PICO_CLI_ANSI_CYAN, "LED1 task: ");
+    printf("GP%u every 250 ms\r\n", led1_task_config.pin);
+    pico_cli_printf_color(PICO_CLI_ANSI_CYAN, "LED2 task: ");
+    printf("GP%u every 1000 ms\r\n", led2_task_config.pin);
+    pico_cli_printf_color(PICO_CLI_ANSI_DIM, "USB CLI: open the Pico USB serial port and type: help or boot\r\n");
 
     BaseType_t led1_created = xTaskCreate(
         two_rate_blink_task,
@@ -76,6 +105,16 @@ int main(void) {
         NULL
     );
     configASSERT(led2_created == pdPASS);
+
+    BaseType_t cli_created = xTaskCreate(
+        cli_task,
+        "cli_task",
+        256,
+        (void *)&cli,
+        tskIDLE_PRIORITY + 1,
+        NULL
+    );
+    configASSERT(cli_created == pdPASS);
 
     vTaskStartScheduler();
 

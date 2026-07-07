@@ -6,6 +6,7 @@
 #include "bsp/board.h"
 #include "hardware/gpio.h"
 #include "pico/stdlib.h"
+#include "pico_cli/pico_cli.h"
 
 typedef struct led_task_config {
     const char *name;
@@ -26,6 +27,12 @@ static const led_task_config_t led_tasks[] = {
     },
 };
 
+static char cli_buffer[64];
+static const pico_cli_command_t cli_commands[] = {
+    {.name = "help", .help = "List available commands", .handler = pico_cli_help_command},
+    {.name = "boot", .help = "Jump to UF2 bootloader mode", .handler = pico_cli_boot_command},
+};
+
 static void blink_task(void *task_parameters) {
     const led_task_config_t *config = (const led_task_config_t *)task_parameters;
     bool level = false;
@@ -38,6 +45,15 @@ static void blink_task(void *task_parameters) {
         level = !level;
         gpio_put(config->pin, level);
         vTaskDelay(config->delay_ticks);
+    }
+}
+
+static void cli_task(void *task_parameters) {
+    pico_cli_t *cli = (pico_cli_t *)task_parameters;
+
+    for (;;) {
+        pico_cli_poll(cli);
+        vTaskDelay(pdMS_TO_TICKS(20));
     }
 }
 
@@ -54,9 +70,22 @@ int main(void) {
     stdio_init_all();
     sleep_ms(1200);
 
-    printf("FreeRTOS blink demo for %s\r\n", BOARD_NAME);
-    printf("Task 1: GP%u every 250 ms\r\n", BOARD_LED_PIN);
-    printf("Task 2: GP%u every 700 ms\r\n", BOARD_GROVE6_PIN1);
+    pico_cli_t cli = {
+        .prompt = "freertos-blink> ",
+        .buffer = cli_buffer,
+        .buffer_size = sizeof(cli_buffer),
+        .commands = cli_commands,
+        .command_count = count_of(cli_commands),
+        .context = NULL,
+    };
+    pico_cli_init(&cli);
+
+    pico_cli_printf_color(PICO_CLI_ANSI_BOLD PICO_CLI_ANSI_GREEN, "FreeRTOS blink demo for %s\r\n", BOARD_NAME);
+    pico_cli_printf_color(PICO_CLI_ANSI_CYAN, "Task 1: ");
+    printf("GP%u every 250 ms\r\n", BOARD_LED_PIN);
+    pico_cli_printf_color(PICO_CLI_ANSI_CYAN, "Task 2: ");
+    printf("GP%u every 700 ms\r\n", BOARD_GROVE6_PIN1);
+    pico_cli_printf_color(PICO_CLI_ANSI_DIM, "USB CLI: open the Pico USB serial port and type: help or boot\r\n");
 
     for (size_t i = 0; i < count_of(led_tasks); ++i) {
         BaseType_t created = xTaskCreate(
@@ -70,6 +99,16 @@ int main(void) {
 
         configASSERT(created == pdPASS);
     }
+
+    BaseType_t cli_created = xTaskCreate(
+        cli_task,
+        "cli_task",
+        256,
+        (void *)&cli,
+        tskIDLE_PRIORITY + 1,
+        NULL
+    );
+    configASSERT(cli_created == pdPASS);
 
     vTaskStartScheduler();
 

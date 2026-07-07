@@ -2,7 +2,7 @@
 
 This demo is a quick hardware smoke test for the Cytron Maker Pi Pico board.
 
-It uses the shared board support from [../../bsp/board.h](/home/thinh/workspace/cytron-maker-pico/bsp/board.h:1) and exercises:
+It uses the shared board support from [../../bsp/board.h](../../bsp/board.h) and exercises:
 
 - GPIO indicator LEDs on `GP0-GP9` and `GP26-GP27`
 - User buttons on `GP20`, `GP21`, and `GP22`
@@ -14,15 +14,15 @@ It uses the shared board support from [../../bsp/board.h](/home/thinh/workspace/
 ## Build From Repo Root
 
 ```bash
-cmake -S /home/thinh/workspace/cytron-maker-pico -B /home/thinh/workspace/cytron-maker-pico/build -DPICO_SDK_PATH=$HOME/pico-sdk
-cmake --build /home/thinh/workspace/cytron-maker-pico/build --target cytron_maker_pi_pico_hw_test
+cmake -S . -B build -DPICO_SDK_PATH=$HOME/pico-sdk
+cmake --build build --target cytron_maker_pi_pico_hw_test
 ```
 
 ## Build This Demo Directly
 
 ```bash
-cmake -S /home/thinh/workspace/cytron-maker-pico/projects/bringup-test -B /home/thinh/workspace/cytron-maker-pico/build/bringup-test -DPICO_SDK_PATH=$HOME/pico-sdk
-cmake --build /home/thinh/workspace/cytron-maker-pico/build/bringup-test
+cmake -S projects/bringup-test -B build/bringup-test -DPICO_SDK_PATH=$HOME/pico-sdk
+cmake --build build/bringup-test
 ```
 
 ## Expected Behavior
@@ -38,7 +38,7 @@ After flashing:
 
 ## USB CLI
 
-The demo also enables a simple shared CLI from [../../lib/pico_cli](/home/thinh/workspace/cytron-maker-pico/lib/pico_cli:1).
+The demo also enables a simple shared CLI from [../../lib/pico_cli](../../lib/pico_cli).
 
 - Transport: Pico USB serial
 - Commands: `help`, `boot`
@@ -49,4 +49,4 @@ Connect the board to your PC over USB, open the Pico serial port, then send `hel
 
 When built from the repo root, the UF2 is:
 
-- [build/cytron_maker_pi_pico_hw_test.uf2](/home/thinh/workspace/cytron-maker-pico/build/cytron_maker_pi_pico_hw_test.uf2)
+- `build/cytron_maker_pi_pico_hw_test.uf2`
