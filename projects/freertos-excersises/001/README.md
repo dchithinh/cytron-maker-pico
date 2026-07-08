@@ -2,7 +2,7 @@
 
 This folder contains the implementation for the exercise described in:
 
-- [rtos-exercises-tier1-answers.md](rtos-exercises-tier1-answers.md)
+- [rtos-exercises-tier1-01-answers.md](rtos-exercises-tier1-01-answers.md)
 
 Implemented design:
 
