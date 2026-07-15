@@ -17,3 +17,23 @@ endif()
 if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/005/CMakeLists.txt)
     add_subdirectory(005)
 endif()
+
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/006/CMakeLists.txt)
+    add_subdirectory(006)
+endif()
+
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/007/CMakeLists.txt)
+    add_subdirectory(007)
+endif()
+
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/008/CMakeLists.txt)
+    add_subdirectory(008)
+endif()
+
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/009/CMakeLists.txt)
+    add_subdirectory(009)
+endif()
+
+if (EXISTS ${CMAKE_CURRENT_LIST_DIR}/010/CMakeLists.txt)
+    add_subdirectory(010)
+endif()

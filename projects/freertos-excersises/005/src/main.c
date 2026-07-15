@@ -61,6 +61,7 @@ static void soft_task(void *task_parameters) {
         heartbeat_update(index);
         vTaskDelay(periods[index]);
     }
+
 }
 
 static void watchdog_task(void *task_parameters) {
