@@ -27,6 +27,8 @@ This repository is a collection of Cytron Maker Pi Pico examples, exercises, and
 - Do not hardcode local machine paths such as `/home/...` or `\\wsl.localhost\...`.
 - Prefer relative build commands over machine-specific absolute commands.
 - Mention outputs as relative paths in backticks unless a direct link is truly needed.
+- Treat existing and planned `.md` files as user-owned design/problem documentation by default.
+- Do not create, overwrite, or edit `.md` files unless the user explicitly asks for Markdown changes.
 
 ## Shared Library Rules
 
